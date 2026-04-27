@@ -208,6 +208,30 @@
   .tab-icon { font-size: 15px; flex-shrink: 0; }
   .tab-btn-label { flex: 1; line-height: 1.3; }
 
+  /* Indicador de submenu (Guias de Consulta) */
+  .tab-chevron {
+    font-size: 9px;
+    color: var(--text3);
+    flex-shrink: 0;
+    transition: transform 0.2s ease, color 0.12s;
+    display: inline-block;
+  }
+  .tab-btn:hover .tab-chevron { color: var(--text2); }
+  .tab-btn.active .tab-chevron { color: var(--accent); }
+  .tab-btn.submenu-open .tab-chevron { transform: rotate(90deg); color: var(--accent); }
+  .tab-sub-count {
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--surface2);
+    color: var(--text3);
+    border-radius: 9px;
+    padding: 1px 7px;
+    flex-shrink: 0;
+    transition: background 0.12s, color 0.12s;
+  }
+  .tab-btn:hover .tab-sub-count { background: var(--border); color: var(--text2); }
+  .tab-btn.active .tab-sub-count { background: var(--accent); color: #fff; }
+
   .sidebar-sub {
     display: none;
     flex-direction: column;
@@ -1088,6 +1112,8 @@
     <button class="tab-btn" id="sidebar-guias-btn" onclick="switchTab('guias', this)">
       <span class="tab-icon">📖</span>
       <span class="tab-btn-label">Guias de Consulta</span>
+      <span class="tab-sub-count" title="6 guias disponíveis">6</span>
+      <span class="tab-chevron">▸</span>
     </button>
     <div class="sidebar-sub" id="sidebar-sub-guias">
       <a class="sidebar-sub-item active" data-section="gs-filtros" onclick="showGuiaSection(this)">
@@ -1239,6 +1265,22 @@
   #panel-passo .p-coral-sub .p-card-title{color:#993C1D}
   .p-toast{position:fixed;bottom:24px;right:24px;background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-border);padding:9px 14px;border-radius:8px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
   .p-toast.show{opacity:1}
+  /* Cards recolhíveis (lista de CONs) */
+  #panel-passo details.p-coll{margin-top:14px;border-radius:6px;overflow:hidden;background:var(--surface);border:1px solid var(--border)}
+  #panel-passo details.p-coll summary{cursor:pointer;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;list-style:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;user-select:none}
+  #panel-passo details.p-coll summary::-webkit-details-marker{display:none}
+  #panel-passo details.p-coll summary::marker{content:""}
+  #panel-passo details.p-coll summary:hover{filter:brightness(.97)}
+  #panel-passo details.p-coll .p-coll-body{padding:10px 13px 12px;display:grid;gap:3px;font-size:11.5px;line-height:1.5;background:var(--surface)}
+  #panel-passo details.p-coll .p-coll-toggle{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--text3);font-weight:500;text-transform:none;letter-spacing:0}
+  #panel-passo details.p-coll .p-coll-toggle::before{content:"Expandir lista"}
+  #panel-passo details.p-coll .p-coll-toggle::after{content:"▾"}
+  #panel-passo details.p-coll[open] .p-coll-toggle::before{content:"Recolher"}
+  #panel-passo details.p-coll[open] .p-coll-toggle::after{content:"▴"}
+  #panel-passo details.p-coll-imp{border-color:var(--danger-border)}
+  #panel-passo details.p-coll-imp summary{background:var(--danger-bg);color:var(--danger);border-left:3px solid var(--danger)}
+  #panel-passo details.p-coll-warn{border-color:var(--warn-border)}
+  #panel-passo details.p-coll-warn summary{background:var(--warn-bg);color:var(--warn);border-left:3px solid var(--warn)}
 </style>
 
     <p class="section-label">Fluxo completo de uso do Esfinge</p>
@@ -1250,7 +1292,7 @@
       <div class="p-leg-title">Legenda de cores</div>
       <div class="p-leg-item"><div class="p-leg-dot" style="background:#5F5E5A"></div>Pré-requisito</div>
       <div class="p-leg-item"><div class="p-leg-dot" style="background:#185FA5"></div>Geração / Consulta</div>
-      <div class="p-leg-item"><div class="p-leg-dot" style="background:#854F0B"></div>Tratamento (só 01/2026)</div>
+      <div class="p-leg-item"><div class="p-leg-dot" style="background:#854F0B"></div>Tratamento de dados</div>
       <div class="p-leg-item"><div class="p-leg-dot" style="background:#0F6E56"></div>Validação de dados</div>
       <div class="p-leg-item"><div class="p-leg-dot" style="background:#534AB7"></div>Validação de CONs</div>
       <div class="p-leg-item"><div class="p-leg-dot" style="background:#3B6D11"></div>Envio / Finalização</div>
@@ -1294,14 +1336,14 @@
       </div>
     </div>
 
-    <!-- TRATAMENTO 01/2026 -->
-    <div class="p-section-label">✦ Somente competência 01/2026 — Tratamento de dados</div>
+    <!-- TRATAMENTO DE DADOS -->
+    <div class="p-section-label">✦ Tratamento de dados</div>
     <div class="p-sub-steps p-amber-sub">
       <div class="p-sub-step" id="ps-A">
         <div class="p-sub-dot">A</div>
         <div class="p-sub-card">
           <div class="p-card-header" onclick="pToggle('pcA')">
-            <span class="p-card-title">Tratamento de dados — Saldo Inicial <span class="p-badge p-badge-jan">01/2026</span></span>
+            <span class="p-card-title">Tratamento de dados — Saldo Inicial <span class="p-badge p-badge-jan">Somente 01/2026</span></span>
             <div class="p-btn-group" onclick="event.stopPropagation()">
               <button class="p-btn p-btn-copy" onclick="pCopy(this,'[Tributos] e-Sfinge Online 2026 - Tratamento de dados - Saldo Inicial')">📋 Copiar</button>
               <button class="p-btn p-btn-done" onclick="pDone('ps-A',this)">✓ Concluído</button>
@@ -1311,29 +1353,40 @@
           <div class="p-card-body" id="pcA">Trata registros baixados indevidamente em 2025. Executar <strong>uma única vez</strong>, após gerar todos os assuntos em 01/2026.</div>
         </div>
       </div>
-    </div>
-
-    <!-- STEP 2 -->
-    <div class="p-section-label">Script obrigatório após geração — todos os meses</div>
-    <div class="p-sub-steps p-blue-sub">
-      <div class="p-sub-step" id="ps-2">
-        <div class="p-sub-dot">2</div>
+      <div class="p-sub-step" id="ps-B">
+        <div class="p-sub-dot">B</div>
         <div class="p-sub-card">
-          <div class="p-card-header" onclick="pToggle('pc2')">
-            <span class="p-card-title">[Tributos] e-Sfinge Online 2026 - 2 - Validação de vínculos saldos iniciais <span class="p-badge p-badge-all">Todo mês</span></span>
+          <div class="p-card-header" onclick="pToggle('pcB')">
+            <span class="p-card-title">Tratamento de dados — Lançamentos não encontrados <span class="p-badge p-badge-all">Padrão</span></span>
             <div class="p-btn-group" onclick="event.stopPropagation()">
-              <button class="p-btn p-btn-copy" onclick="pCopy(this,'[Tributos] e-Sfinge Online 2026 - 2 - Validação de vínculos saldos iniciais')">📋 Copiar</button>
-              <button class="p-btn p-btn-done" onclick="pDone('ps-2',this)">✓ Concluído</button>
-              <button class="p-btn p-btn-toggle" onclick="pToggle('pc2')">▲</button>
+              <button class="p-btn p-btn-copy" onclick="pCopy(this,'[Tributos] e-Sfinge Online 2026 - Tratamento de dados - Lançamentos não encontrados')">📋 Copiar</button>
+              <button class="p-btn p-btn-done" onclick="pDone('ps-B',this)">✓ Concluído</button>
+              <button class="p-btn p-btn-toggle" onclick="pToggle('pcB')">▲</button>
             </div>
           </div>
-          <div class="p-card-body" id="pc2">Valida e trata os vínculos do assunto [00] com os assuntos posteriores. Executar <strong>todo mês após a geração de dados</strong>. Em 01/2026, executar logo após o script de Tratamento de Saldo Inicial.</div>
+          <div class="p-card-body" id="pcB">Verifica se os lançamentos mencionados nos assuntos 00 existem no assunto 04 — Lançamentos/Dívidas. Caso algum lançamento não exista, ele é <strong>corrigido ou inserido</strong> no assunto 04 na competência atual como lançamento do exercício corrente.<br><br>⚠️ <strong>Após executar:</strong> rodar novamente as validações, iniciando pela <em>Validação de vínculos saldos iniciais</em>, para atualizar o ano do lançamento nos assuntos que o mencionam.</div>
         </div>
       </div>
     </div>
 
     <!-- VALIDAÇÃO -->
     <div class="p-section-label">Validação de dados — todos os meses, nesta ordem</div>
+
+    <!-- STEP 2 (movido do grupo de geração para o grupo de validação) -->
+    <div class="p-step p-teal" id="ps-2">
+      <div class="p-line-col"><div class="p-dot">2</div><div class="p-vline"></div></div>
+      <div class="p-card">
+        <div class="p-card-header" onclick="pToggle('pc2')">
+          <span class="p-card-title">[Tributos] e-Sfinge Online 2026 - 2 - Validação de vínculos saldos iniciais <span class="p-badge p-badge-all">Todo mês</span></span>
+          <div class="p-btn-group" onclick="event.stopPropagation()">
+            <button class="p-btn p-btn-copy" onclick="pCopy(this,'[Tributos] e-Sfinge Online 2026 - 2 - Validação de vínculos saldos iniciais')">📋 Copiar</button>
+            <button class="p-btn p-btn-done" onclick="pDone('ps-2',this)">✓ Concluído</button>
+            <button class="p-btn p-btn-toggle" onclick="pToggle('pc2')">▲</button>
+          </div>
+        </div>
+        <div class="p-card-body" id="pc2">Valida e trata os vínculos do assunto [00] com os assuntos posteriores. Executar <strong>todo mês após a geração de dados</strong>. Em 01/2026, executar logo após o script de Tratamento de Saldo Inicial.</div>
+      </div>
+    </div>
 
     <div class="p-step p-teal" id="ps-3">
       <div class="p-line-col"><div class="p-dot">3</div><div class="p-vline"></div></div>
@@ -1361,7 +1414,7 @@
             <button class="p-btn p-btn-toggle" onclick="pToggle('pc4')">▲</button>
           </div>
         </div>
-        <div class="p-card-body" id="pc4">Verifica se todas as cobranças vinculadas aos assuntos 08 e 11 estão geradas no assunto 05. Somente validação — emite erro se houver pendência. Execução obrigatória nesta ordem.</div>
+        <div class="p-card-body" id="pc4">Verifica se todas as cobranças vinculadas aos assuntos 08 e 11 estão geradas no assunto 05. Somente validação — emite erro se houver pendência. Execução obrigatória nesta ordem.<div style="margin-top:12px;background:var(--warn-bg);border:1px solid var(--warn-border);border-left:3px solid var(--warn);border-radius:6px;padding:10px 13px"><div style="font-size:10px;font-weight:700;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:flex;align-items:center;gap:6px"><span style="font-size:13px">⚠️</span><span>Se houver erro: aplicar tratamento</span></div><div style="font-size:12px;color:var(--text2);line-height:1.65">Caso a validação retorne erro, executar o seguinte fluxo de correção:<ol style="margin:6px 0 0 18px;padding:0"><li>Executar o script <strong><a href="#" onclick="event.preventDefault();goToScript('sc-005')" style="color:var(--accent);text-decoration:underline;cursor:pointer">Tratamento de dados — Cobrança de dívida ativa não gerada</a></strong> (disponível na aba <em>Scripts Úteis</em>).</li><li>Executar novamente a <strong>Validação de vínculos saldos iniciais</strong> (passo 2) para reorganizar os vínculos.</li><li>Prosseguir com a Validação de cobrança dívida ativa.</li></ol></div></div></div>
       </div>
     </div>
 
@@ -1376,7 +1429,7 @@
             <button class="p-btn p-btn-toggle" onclick="pToggle('pc5')">▲</button>
           </div>
         </div>
-        <div class="p-card-body" id="pc5">Verifica se todos os lançamentos vinculados aos assuntos 05 a 11 estão presentes no assunto 04. Somente validação — emite erro se houver pendência. Execução obrigatória nesta ordem.</div>
+        <div class="p-card-body" id="pc5">Verifica se todos os lançamentos vinculados aos assuntos 05 a 11 estão presentes no assunto 04. Somente validação — emite erro se houver pendência. Execução obrigatória nesta ordem.<div style="margin-top:12px;background:var(--danger-bg);border:1px solid var(--danger-border);border-left:3px solid var(--danger);border-radius:6px;padding:10px 13px"><div style="font-size:10px;font-weight:700;color:var(--danger);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:flex;align-items:center;gap:6px"><span style="font-size:13px">🤖</span><span>Se houver erro: Validação de IA</span></div><div style="font-size:12px;color:var(--text2);line-height:1.65">Caso a validação retorne erro, executar a <strong>Validação de IA</strong> como obrigação adicional do passo a passo:<ol style="margin:6px 0 0 18px;padding:0"><li>Encaminhar o erro <strong>via chat</strong> para o técnico <strong>Lucas de Castro Zanoni</strong>.</li><li>Ele rodará o erro na <strong>IA interna da Betha</strong>.</li><li>O <strong>diagnóstico</strong> será disponibilizado no <strong>Google Drive</strong>.</li></ol></div></div></div>
       </div>
     </div>
 
@@ -1422,7 +1475,97 @@
             <button class="p-btn p-btn-toggle" onclick="pToggle('pc8')">▲</button>
           </div>
         </div>
-        <div class="p-card-body" id="pc8">Executa as regras de consistência conforme v6.2. CONs impeditivas são <strong>obrigatórias</strong> antes do envio. Recomenda-se executar também as de alerta.<br><br><strong>Impeditivas novas em 2026:</strong> CON779, CON780, CON781 &nbsp;|&nbsp; <strong>Alerta nova:</strong> CON782</div>
+        <div class="p-card-body" id="pc8">Executa as regras de consistência conforme v6.2.
+
+<!-- Convenção I / A -->
+<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+  <div style="flex:1;min-width:220px;background:var(--danger-bg);border:1px solid var(--danger-border);border-left:3px solid var(--danger);border-radius:6px;padding:9px 12px">
+    <div style="font-size:11px;font-weight:700;color:var(--danger);display:flex;align-items:center;gap:6px;margin-bottom:3px">
+      <span style="font-family:var(--mono);background:var(--danger);color:#fff;padding:1px 7px;border-radius:3px;font-size:10px">I</span>
+      <span>Impeditiva — obrigatória</span>
+    </div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.55">Quando aparece o <strong>"I"</strong> ao lado do número da CON, ela é <strong>impeditiva</strong> e precisa ser executada na Validação de CONs obrigatoriamente. Bloqueia o envio se houver pendência.</div>
+  </div>
+  <div style="flex:1;min-width:220px;background:var(--warn-bg);border:1px solid var(--warn-border);border-left:3px solid var(--warn);border-radius:6px;padding:9px 12px">
+    <div style="font-size:11px;font-weight:700;color:var(--warn);display:flex;align-items:center;gap:6px;margin-bottom:3px">
+      <span style="font-family:var(--mono);background:var(--warn);color:#fff;padding:1px 7px;border-radius:3px;font-size:10px">A</span>
+      <span>Aviso — recomendada</span>
+    </div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.55">Quando aparece o <strong>"A"</strong> ao lado do número, é apenas um <strong>aviso</strong>. Não bloqueia o envio, mas é recomendado executar para garantir consistência dos dados.</div>
+  </div>
+</div>
+
+<!-- Atenção redobrada: CON737 e CON778 -->
+<div style="margin-top:12px;background:var(--danger-bg);border:1px solid var(--danger-border);border-left:3px solid var(--danger);border-radius:6px;padding:10px 13px">
+  <div style="font-size:10px;font-weight:700;color:var(--danger);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Atenção redobrada — novas e bastante cobradas</div>
+  <div style="font-size:12px;color:var(--text2);line-height:1.6"><strong>CON737</strong> e <strong>CON778</strong> são CONs impeditivas novas que estão sendo <strong>bastante cobradas</strong>. Garanta que ambas estejam executadas e sem pendências antes do envio.</div>
+</div>
+
+<!-- Novas em 2026 -->
+<div style="margin-top:10px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:6px;padding:8px 13px;font-size:11.5px;color:var(--text2);line-height:1.55">
+  <strong style="color:var(--accent)">Novas em 2026:</strong> Impeditivas <strong>CON779</strong>, <strong>CON780</strong>, <strong>CON781</strong> &nbsp;·&nbsp; Aviso <strong>CON782</strong>
+</div>
+
+<!-- Lista impeditivas (recolhível) -->
+<details class="p-coll p-coll-imp">
+  <summary>
+    <span style="display:flex;align-items:center;gap:6px">
+      <span style="font-family:var(--mono);background:var(--danger);color:#fff;padding:1px 7px;border-radius:3px;font-size:10px">I</span>
+      <span>Impeditivas (17) — execução obrigatória</span>
+    </span>
+    <span class="p-coll-toggle"></span>
+  </summary>
+  <div class="p-coll-body">
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON730</strong> — Verifica totalizadores informados do Tributário</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON731</strong> — Verifica a existência de Baixa dos Créditos em virtude de migração de Sistema de TI</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON734</strong> — Verifica a existência de registros do Diário de Arrecadação</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON735</strong> — Verifica a existência de Estorno e Restituição em valor superior ao da Arrecadação</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON736</strong> — Verifica a existência de Estorno de Baixa em valor superior ao da Baixa</div>
+    <div style="background:var(--danger-bg);border-left:3px solid var(--danger);padding:5px 9px;border-radius:3px"><strong style="font-family:var(--mono);color:var(--danger)">CON737</strong><span style="background:var(--danger);color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:6px;font-family:var(--sans)">Crítica</span> — Verifica a existência de Saldo Negativo dos Lançamentos de Crédito Tributário</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON738</strong> — Verifica lançamentos vinculados a contribuinte que tenha o mesmo CNPJ da UG</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON777</strong> — Valida o campo "Número do Protesto Extrajudicial ou da Execução Fiscal"</div>
+    <div style="background:var(--danger-bg);border-left:3px solid var(--danger);padding:5px 9px;border-radius:3px"><strong style="font-family:var(--mono);color:var(--danger)">CON778</strong><span style="background:var(--danger);color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:6px;font-family:var(--sans)">Crítica</span> — Verifica a existência de Estorno de Revisão em valor superior ao da Revisão</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON779</strong><span style="background:var(--accent);color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:6px;font-family:var(--sans)">Nova</span> — Verifica a existência de Novo Número de Inscrição Imobiliária (Cadastro Imobiliário)</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON780</strong><span style="background:var(--accent);color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:6px;font-family:var(--sans)">Nova</span> — Verifica existência de Lançamento do Crédito Tributário/Dívida Ativa Original (Transferência)</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON781</strong><span style="background:var(--accent);color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:6px;font-family:var(--sans)">Nova</span> — Verifica existência do Número de Inscrição Imobiliária vinculado ao Lançamento/Dívida</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON786</strong> — Verifica a compatibilidade entre a Baixa de Crédito e a Reintegração de Crédito</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON807</strong> — Verifica relação % entre Impostos enviados pelos tributos × contabilidade</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON809</strong> — Verifica relação % entre Taxas enviadas pelos tributos × contabilidade</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">CON817</strong> — Verifica relação % entre Contribuição de Melhoria enviada pelos tributos × contabilidade</div>
+    <div><strong style="font-family:var(--mono);color:var(--danger)">VALDTS</strong> — Verifica registros cuja data esteja fora da competência informada</div>
+  </div>
+</details>
+
+<!-- Lista avisos (recolhível) -->
+<details class="p-coll p-coll-warn">
+  <summary>
+    <span style="display:flex;align-items:center;gap:6px">
+      <span style="font-family:var(--mono);background:var(--warn);color:#fff;padding:1px 7px;border-radius:3px;font-size:10px">A</span>
+      <span>Avisos (17) — recomendadas</span>
+    </span>
+    <span class="p-coll-toggle"></span>
+  </summary>
+  <div class="p-coll-body">
+    <div><strong style="font-family:var(--mono);color:var(--warn)">EXTRAS</strong> — Verifica inconsistências antes do processo de ENVIO</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON711</strong> — Verifica a consistência entre datas de dedução de tributos × data do lançamento</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON732</strong> — Verifica se o Tipo da Natureza de Receita é compatível com o Tipo de Arrecadação</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON733</strong> — Verifica se a Natureza de Receita é compatível com o Tipo de Crédito do lançamento</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON760</strong> — Verifica a Data da Operação do Diário Geral de Arrecadação</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON761</strong> — Verifica a Data do Estorno ou Restituição da Arrecadação</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON762</strong> — Verifica a Data do Lançamento do Crédito Tributário</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON763</strong> — Verifica a Data da Revisão do Lançamento</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON764</strong> — Verifica a Data da Baixa do Lançamento</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON765</strong> — Verifica a existência de Certidão da Dívida Ativa em Processos Judiciais</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON767</strong> — Verifica a consistência entre a Inscrição em Dívida e a Baixa do Crédito Tributário</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON769</strong> — Verifica o envio da Certidão de Dívida Ativa</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON770</strong> — Verifica o envio do Tipo de Cobrança de Dívida Ativa</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON772</strong> — Verifica a existência de "Início do prazo prescricional"</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON773</strong> — Verifica o vínculo entre o Diário Geral de Arrecadação e da Cobrança da Dívida Ativa</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON774</strong> — Verifica se existe mais de uma Cobrança da Dívida Ativa com situação Ativa (01 ou 08)</div>
+    <div><strong style="font-family:var(--mono);color:var(--warn)">CON782</strong><span style="background:var(--accent);color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:6px;font-family:var(--sans)">Nova</span> — Verifica a consistência das Transferências de Crédito Tributário entre Contribuintes</div>
+  </div>
+</details>
+</div>
       </div>
     </div>
 
@@ -1454,7 +1597,7 @@
             <button class="p-btn p-btn-toggle" onclick="pToggle('pc10')">▲</button>
           </div>
         </div>
-        <div class="p-card-body" id="pc10">Acompanha o processamento dos lotes. Em caso de erro, os assuntos posteriores são descartados automaticamente.<br><strong>Se houver erro:</strong> usar o <em>Cancelar pacote</em> para descartar (parcial ou total), corrigir e reenviar.</div>
+        <div class="p-card-body" id="pc10">Acompanha o processamento dos lotes enviados ao TCE.<div style="margin-top:10px;background:var(--accent-bg);border:1px solid var(--accent-border);border-left:3px solid var(--accent);border-radius:6px;padding:10px 13px"><div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Layout atualizado</div><div style="font-size:12px;color:var(--text2);line-height:1.65">A consulta foi atualizada e agora retorna o resultado das remessas <strong>em tempo real</strong>. Basta <strong>atualizar a página</strong> sempre que quiser os dados mais recentes — não é mais necessário aguardar reprocessamentos.<br><br>O retorno passa a apresentar, em formato de tabela, o cabeçalho com <em>Código UG</em>, <em>Chave do Pacote</em>, <em>Ambiente</em>, <em>Data/Hora da Consulta</em> e <em>Total de Registros</em>, seguido das colunas <em>Situação</em>, <em>Identificador Remessa</em>, <em>Número Lote</em> e <em>Data Envio</em> de cada lote enviado.</div></div><div style="margin-top:10px;font-size:12px;color:var(--text2);line-height:1.6"><strong>Se houver erro:</strong> os assuntos posteriores são descartados automaticamente. Usar o <em>Cancelar pacote</em> para descartar (parcial ou total), corrigir e reenviar.</div></div>
       </div>
     </div>
 
@@ -1471,7 +1614,25 @@
               <button class="p-btn p-btn-toggle" onclick="pToggle('pccp')">▲</button>
             </div>
           </div>
-          <div class="p-card-body" id="pccp"><strong>Descarte parcial:</strong> Deletar pacote = Não (mantém assuntos corretos).<br><strong>Descarte total:</strong> Deletar pacote = Sim (reinicia do zero).</div>
+          <div class="p-card-body" id="pccp">Script utilizado para descartar o pacote enviado quando há erro no processamento, permitindo correção e reenvio.
+
+<!-- Cancelar pacote inteiro -->
+<div style="margin-top:12px;background:var(--danger-bg);border:1px solid var(--danger-border);border-left:3px solid var(--danger);border-radius:6px;padding:10px 13px">
+  <div style="font-size:10px;font-weight:700;color:var(--danger);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Cancelar o pacote inteiro</div>
+  <div style="font-size:12px;color:var(--text2);line-height:1.65">Para descartar o pacote por completo (reinício do zero), na parametrização do script:<ul style="margin:6px 0 0 18px;padding:0"><li><strong>Assunto:</strong> não selecionar nenhum (deixar em branco)</li><li><strong>Deletar o pacote:</strong> <strong>Sim</strong></li></ul></div>
+</div>
+
+<!-- Cancelar assunto específico -->
+<div style="margin-top:10px;background:var(--warn-bg);border:1px solid var(--warn-border);border-left:3px solid var(--warn);border-radius:6px;padding:10px 13px">
+  <div style="font-size:10px;font-weight:700;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Cancelar somente um assunto específico</div>
+  <div style="font-size:12px;color:var(--text2);line-height:1.65">Para descartar apenas um assunto (mantendo os demais já enviados), na parametrização:<ul style="margin:6px 0 0 18px;padding:0"><li><strong>Assunto:</strong> selecionar o assunto desejado</li><li>Os demais assuntos permanecem inalterados no pacote</li></ul></div>
+</div>
+
+<!-- Dica sobre assunto 00 -->
+<div style="margin-top:10px;background:var(--accent-bg);border:1px solid var(--accent-border);border-left:3px solid var(--accent);border-radius:6px;padding:10px 13px">
+  <div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">💡 Dica — erro no assunto 00</div>
+  <div style="font-size:12px;color:var(--text2);line-height:1.65">Se o erro ocorrer especificamente no <strong>assunto 00</strong>, <strong>não é necessário cancelar o pacote inteiro</strong>. Basta cancelar somente o assunto 00, corrigir e reenviar.</div>
+</div></div>
         </div>
       </div>
     </div>
@@ -1996,10 +2157,10 @@
               <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text2);">situacaoTipoCobrancaDividaAtiva</td>
               <td style="padding:8px 14px;"><code style="font-family:var(--mono);font-size:11px;background:var(--tag-bg);padding:2px 6px;border-radius:3px;color:var(--text);">numeroAnoTipoCobrancaDividaAtiva</code></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);opacity:.6;">
-              <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text3);background:var(--surface2);text-align:center;white-space:nowrap;">09</td>
-              <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text3);">revisaoValorLancamentosCreditosTributarios</td>
-              <td style="padding:8px 14px;"><span style="font-size:11px;color:var(--warn);font-style:italic;">Pendente</span></td>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);text-align:center;white-space:nowrap;">09</td>
+              <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--text2);">revisaoValorLancamentosCreditosTributarios</td>
+              <td style="padding:8px 14px;"><code style="font-family:var(--mono);font-size:11px;background:var(--tag-bg);padding:2px 6px;border-radius:3px;color:var(--text);">codigoLancamentoCreditoTributario</code></td>
             </tr>
             <tr style="border-bottom:1px solid var(--border);">
               <td style="padding:8px 14px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);text-align:center;white-space:nowrap;">10</td>
@@ -4785,13 +4946,7 @@ percorrer (dadosEsfinge) { itemEsfinge -&gt;
               <div class="er-cell-sol"><button class="er-sol-btn">Solu&#231;&#227;o &#9662;</button></div>
             </div>
             <div class="er-solution-panel"><div class="er-sol-grid">
-              <div><div class="er-sol-section-title">&#128214; O que significa</div><p style="font-size:12px;color:var(--text2);line-height:1.55;">Este erro pode ter <strong>múltiplas causas</strong>. Verifique qual cenário se aplica ao seu caso.</p></div>
-
-<!-- ── CAUSA 1: Multientidade / idDado null ── -->
-<div class="er-sol-full" style="margin-top:16px; padding-top:14px; border-top:1px dashed var(--border);">
-<div class="er-sol-section-title" style="color:var(--accent);font-size:13px;font-weight:700;">Causa 1 — Entidade virou multientidade (idDado null)</div>
-<p style="font-size:12px;color:var(--text2);line-height:1.55;margin-top:6px;">Comum quando a entidade virou <strong>multientidade</strong>. Registros antigos ficam com <code style="font-family:var(--mono);font-size:11px;background:var(--tag-bg);padding:1px 4px;border-radius:3px;">idDado = null</code>. <strong>Verificar a UG correta antes de executar — setar a UG errada perpetua o problema.</strong></p>
-</div>
+              <div><div class="er-sol-section-title">&#128214; O que significa</div><p style="font-size:12px;color:var(--text2);line-height:1.55;">Comum quando a entidade virou <strong>multientidade</strong>. Registros antigos ficam com <code style="font-family:var(--mono);font-size:11px;background:var(--tag-bg);padding:1px 4px;border-radius:3px;">idDado = null</code>. <strong>Verificar a UG correta antes de executar — setar a UG errada perpetua o problema.</strong></p></div>
 <div class="er-sol-full"><div class="er-sol-section-title">&#128295; Como resolver</div><div class="er-steps"><div class="er-sol-step"><div class="er-sol-step-num">1</div><div class="er-sol-step-body"><div class="er-sol-step-title">Preencher idDado com a UG correta em massa (criar parâmetro "competencia")</div><div class="er-sol-step-desc"></div><div class="er-code-label">TypeScript</div><div class="er-code-block"><code><span class="fn">fonteEsfinge</span> = Dados.tributos.v2.esfinge;
 <span class="fn">filtroEsfinge</span> = <span class="str">"(idDado is null or idDado = 0) and idGrupo = '${parametros.competencia.valor.toString().replace('-','')}'"</span>
 <span class="fn">dadosEsfinge</span> = fonteEsfinge.busca(criterio: filtroEsfinge)
@@ -4818,37 +4973,6 @@ percorrer (listaTotal) { itens -&gt;
   esperar 10000
 }</code></div></div></div></div></div>
 <div class="er-confirm-box"><strong>&#9989; Após corrigir:</strong> Reexecutar a validação de lançamentos.</div>
-
-<!-- ── CAUSA 2: Saldo Inicial não gerado por estorno na mesma data ── -->
-<div class="er-sol-full" style="margin-top:20px; padding-top:16px; border-top:1px dashed var(--border);">
-<div class="er-sol-section-title" style="color:var(--accent);font-size:13px;font-weight:700;">Causa 2 — Saldo Inicial não gerado por estorno na mesma data da inscrição</div>
-<p style="font-size:12px;color:var(--text2);line-height:1.55;margin-top:6px;">Os lançamentos listados no erro são referenciados por assuntos posteriores (05 a 12) mas <strong>não possuem registro no assunto 00</strong> (<code style="font-family:var(--mono);font-size:11px;background:var(--tag-bg);padding:1px 4px;border-radius:3px;">saldosIniciaisCreditoTributario</code>). Isso ocorre quando um débito foi inscrito e estornado <strong>na mesma data</strong> — a rotina de encerramento mensal de dezembro não grava o saldo desse débito, pois interpreta o estorno como a "primeira movimentação" e ignora que o crédito existiu.</p>
-</div>
-
-<div class="er-sol-full" style="margin-top:10px;">
-<div class="er-sol-section-title">&#9888; Como identificar este cenário</div>
-<div class="er-steps">
-<div class="er-sol-step"><div class="er-sol-step-num">&#10003;</div><div class="er-sol-step-body"><div class="er-sol-step-desc" style="font-size:12px;color:var(--text2);line-height:1.55;">Os assuntos que referenciam esses lançamentos estão com <code style="font-family:var(--mono);font-size:11px;background:var(--tag-bg);padding:1px 4px;border-radius:3px;">anoLancamento = 0</code></div></div></div>
-<div class="er-sol-step"><div class="er-sol-step-num">&#10003;</div><div class="er-sol-step-body"><div class="er-sol-step-desc" style="font-size:12px;color:var(--text2);line-height:1.55;">Ao consultar no sistema, os débitos foram inscritos e estornados na mesma data</div></div></div>
-<div class="er-sol-step"><div class="er-sol-step-num">&#10003;</div><div class="er-sol-step-body"><div class="er-sol-step-desc" style="font-size:12px;color:var(--text2);line-height:1.55;">Não há registro no assunto 00 (<code style="font-family:var(--mono);font-size:11px;background:var(--tag-bg);padding:1px 4px;border-radius:3px;">saldosIniciaisCreditoTributario</code>) para esses lançamentos</div></div></div>
-<div class="er-sol-step"><div class="er-sol-step-num">&#10003;</div><div class="er-sol-step-body"><div class="er-sol-step-desc" style="font-size:12px;color:var(--text2);line-height:1.55;">O encerramento mensal de dezembro não gravou saldo para eles</div></div></div>
-</div>
-</div>
-
-<div class="er-sol-full" style="margin-top:10px;">
-<div class="er-sol-section-title">&#128295; Como resolver</div>
-<div class="er-steps">
-<div class="er-sol-step"><div class="er-sol-step-num">1</div><div class="er-sol-step-body"><div class="er-sol-step-title">Alterar a data do estorno</div><div class="er-sol-step-desc" style="font-size:12px;color:var(--text2);line-height:1.55;">Alterar a data do estorno para uma data <strong>posterior</strong> à data de inscrição do débito (não precisa ser muito — basta que sejam datas diferentes).</div></div></div>
-<div class="er-sol-step"><div class="er-sol-step-num">2</div><div class="er-sol-step-body"><div class="er-sol-step-title">Reabrir e reencerrar o mês de dezembro</div><div class="er-sol-step-desc" style="font-size:12px;color:var(--text2);line-height:1.55;">Isso forçará a rotina de encerramento a gravar o saldo do débito corretamente na fonte.</div></div></div>
-<div class="er-sol-step"><div class="er-sol-step-num">3</div><div class="er-sol-step-body"><div class="er-sol-step-title">Regerar os dados do e-Sfinge</div><div class="er-sol-step-desc" style="font-size:12px;color:var(--text2);line-height:1.55;">Executar novamente o script de geração de dados para que o assunto 00 inclua o saldo que antes estava ausente.</div></div></div>
-</div>
-</div>
-
-<div style="background:var(--warn-bg);border-left:4px solid var(--warn-border);padding:10px 14px;border-radius:6px;margin:12px 0;font-size:12px;color:var(--warn);line-height:1.55;">
-<strong>&#9888;&#65039; Observação:</strong> Esta causa foi identificada pontualmente e tratada por um desenvolvedor. Ainda não está confirmado se é um caso geral ou isolado. Pode ser um <strong>incidente da rotina de encerramento mensal</strong>, que estaria considerando a movimentação de estorno como a primeira movimentação do débito. Se o cenário se repetir em outros municípios, considerar escalar como incidente geral para a equipe de Produto.
-</div>
-
-<div class="er-confirm-box"><strong>&#9989; Após corrigir:</strong> Regerar os dados e reexecutar as validações. A mensagem de erro não deve mais aparecer para esses lançamentos.</div>
             </div></div>
           </div>
         </div>
@@ -7852,22 +7976,56 @@ percorrer (dadosEsfinge) { itemEsfinge -&gt;
 
 <script>
   function switchTab(name, btn) {
+    var sub = document.getElementById('sidebar-sub-guias');
+
+    // Caso especial: clicar em "Guias de Consulta" quando ela já está ativa
+    // alterna apenas o submenu (sem trocar de aba)
+    if (name === 'guias' && btn.classList.contains('active')) {
+      if (sub) {
+        sub.classList.toggle('open');
+        btn.classList.toggle('submenu-open', sub.classList.contains('open'));
+      }
+      return;
+    }
+
     document.querySelectorAll('.tab-panel').forEach(function(p) {
       p.classList.remove('active');
       p.style.display = 'none';
     });
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+      b.classList.remove('active');
+      b.classList.remove('submenu-open');
+    });
     var panel = document.getElementById('panel-' + name);
     panel.classList.add('active');
     panel.style.display = 'block';
     btn.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     // show/hide guias sidebar submenu
-    var sub = document.getElementById('sidebar-sub-guias');
     if (sub) sub.classList.toggle('open', name === 'guias');
+    if (name === 'guias') btn.classList.add('submenu-open');
     // close sidebar on mobile after navigation (but not for guias sub-links)
     var sb = document.getElementById('sidebar');
     if (sb && window.innerWidth <= 780 && name !== 'guias') sb.classList.remove('open');
+  }
+
+  /* Navega até um script específico na aba "Scripts Úteis" e o expande */
+  function goToScript(scriptId) {
+    var tabBtn = document.querySelector('.tab-btn[onclick*="\'scripts\'"]');
+    if (tabBtn) switchTab('scripts', tabBtn);
+    setTimeout(function() {
+      var card = document.getElementById(scriptId);
+      if (!card) return;
+      // Expande o card se estiver recolhido
+      if (typeof scToggle === 'function' && !card.classList.contains('expanded')) {
+        scToggle(scriptId);
+      }
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Destaque visual rápido
+      card.style.transition = 'box-shadow .3s';
+      card.style.boxShadow = '0 0 0 3px var(--accent)';
+      setTimeout(function() { card.style.boxShadow = ''; }, 1800);
+    }, 250);
   }
 
   function toggleSidebar() {
@@ -8192,7 +8350,7 @@ percorrer (dadosEsfinge) { itemEsfinge -&gt;
     {m:'PM ALFREDO WAGNER/SC',      u:'09095303942 / 12237352909',  s:'Est090 / pmawIza122',ug:''},
     {m:'PM DE SÃO CRISTÓVÃO DO SUL/SC', u:'09486907986',            s:'E7ra18',             ug:'10103'},
     {m:'PM DE ÁGUAS MORNAS/SC',     u:'89863860972',                s:'Ah180413',           ug:''},
-    {m:'PM DE BRAÇO DO NORTE/SC',   u:'9101450913',                 s:'Nicole123',          ug:''},
+    {m:'PM DE BRAÇO DO NORTE/SC',   u:'9101450913',                 s:'Nicole123',          ug:'10944'},
     {m:'PM DE CUNHATAÍ/SC',         u:'12418286959',                s:'pQxw9Y',             ug:''},
     {m:'PM DE FREI ROGÉRIO',        u:'06771649989',                s:'Frei2017',           ug:'22829'},
     {m:'PM DE CAMPOS NOVOS',        u:'61278106987',                s:'Pmj82939',           ug:'12041'},
@@ -8206,7 +8364,7 @@ percorrer (dadosEsfinge) { itemEsfinge -&gt;
     {m:'PM DE BRAÇO DO TROMBUDO',   u:'00490094945',                s:'Michelle@1',         ug:'11070'},
     {m:'PM DE RANCHO QUEIMADO',     u:'65668723968',                s:'Tributos2023',       ug:'11509'},
     {m:'PM DE TREZE DE MAIO',       u:'02447873956',                s:'15am80LK',           ug:'10758'},
-    {m:'PM DE CURITIBANOS',         u:'58682171953',                s:'Nilson586',          ug:'12084'},
+    {m:'PM DE CURITIBANOS',         u:'58682171953',                s:'Nilson586',          ug:'12084', sub:'CLOUD'},
     {m:'PM DE ARMAZÉM',             u:'34360050968',                s:'TRIBUTOS2020v',      ug:'11380'},
     {m:'PM DE MAJOR GERCINO',       u:'1458634922',                 s:'Major2025',          ug:''},
     {m:'PM DE VIDAL RAMOS',         u:'08893851903',                s:'Lucas2023',          ug:'10928'},
@@ -8244,7 +8402,7 @@ percorrer (dadosEsfinge) { itemEsfinge -&gt;
     {m:'PM DE SALTINHO',            u:'01604272902',                s:'Marcelo123',         ug:'22918'},
     {m:'PM DE SCHROEDER',           u:'86146785920',                s:'Ob7jC5',             ug:'11495'},
     {m:'PM DE PALMITOS',            u:'89581288953',                s:'Soeli2020',          ug:''},
-    {m:'PM DE SÃO LOURENÇO DO OESTE', u:'06217669927',              s:'Trib2014',           ug:'12491'},
+    {m:'PM DE SÃO LOURENÇO DO OESTE', u:'07127842922',              s:'Gisieli2026@',       ug:'12491'},
     {m:'PM DE BANDEIRANTE (1)',      u:'05964775977',                s:'CIDaiane123',        ug:'22691'},
     {m:'PM DE BANDEIRANTE (2)',      u:'10023175923',                s:'Tributosband123',    ug:'22691'},
     {m:'PM DE IRACEMINHA',          u:'07248760900',                s:'Bia2106',            ug:'11150'},
@@ -8268,7 +8426,7 @@ percorrer (dadosEsfinge) { itemEsfinge -&gt;
     {m:'FS DE LAGUNA',              u:'05315788954',                s:'Amanda0304',         ug:'19127', sub:'Laguna'},
     {m:'PM DE POUSO REDONDO',       u:'8870893995',                 s:'Taleisi2024',        ug:'11428'},
     {m:'PM DE MAJOR VIEIRA',        u:'05424153992',                s:'sQbzm2',             ug:'12270'},
-    {m:'PM DE CAMPO BELO DO SUL',   u:'11423947940',                s:'Hd1501##',           ug:'11100'},
+    {m:'PM DE CAMPO BELO DO SUL',   u:'90749561904',                s:'Vrp2020',            ug:'11100'},
     {m:'PM DE ANGELINA',            u:'00462982904',                s:'Contab20',           ug:'11517'},
     {m:'PM DE CAPINZAL',            u:'02322273902',                s:'ALEroca2023',        ug:'10987'},
     {m:'PM DE SÃO JOÃO BATISTA',    u:'05033695940',                s:'Gfnx5J',             ug:'12475'},
@@ -8280,7 +8438,10 @@ percorrer (dadosEsfinge) { itemEsfinge -&gt;
     {m:'PM DE SIDERÓPOLIS',         u:'73271721904',                s:'Arnoldo123456',      ug:'10391'},
     {m:'PM DE GRÃO PARÁ',           u:'07966358976',                s:'Eduarda2607',        ug:'69754'},
     {m:'PM DE SANTA TEREZINHA',     u:'89403797053',                s:'Luiz0501',           ug:'12513'},
-    {m:'PM DE ERMO',                u:'00462982904',                s:'Contab20',           ug:'22802'}
+    {m:'PM DE ERMO',                u:'00462982904',                s:'Contab20',           ug:'22802'},
+    {m:'PM DE MORRO GRANDE',        u:'73271721904',                s:'Arnoldo123456',      ug:''},
+    {m:'PM DE BOM JESUS DA SERRA',  u:'02549955005',                s:'Cleber@9694',        ug:'12009'},
+    {m:'PM DE ÁGUA DOCE',           u:'90805992987',                s:'Ssy80C',             ug:''}
   ];
 
   var acPasswordsVisible = false;

@@ -1112,7 +1112,7 @@
     <button class="tab-btn" id="sidebar-guias-btn" onclick="switchTab('guias', this)">
       <span class="tab-icon">📖</span>
       <span class="tab-btn-label">Guias de Consulta</span>
-      <span class="tab-sub-count" title="7 guias disponíveis">7</span>
+      <span class="tab-sub-count" title="8 guias disponíveis">8</span>
       <span class="tab-chevron">▸</span>
     </button>
     <div class="sidebar-sub" id="sidebar-sub-guias">
@@ -1136,6 +1136,9 @@
       </a>
       <a class="sidebar-sub-item" data-section="gs-tabelas-config" onclick="showGuiaSection(this)">
         <span class="sidebar-sub-icon">⚙️</span>Tabelas de Configuração
+      </a>
+      <a class="sidebar-sub-item" data-section="gs-tabelas-tce" onclick="showGuiaSection(this)">
+        <span class="sidebar-sub-icon">🏛️</span>Tabelas do TCE
       </a>
     </div>
     <button class="tab-btn" onclick="switchTab('assuntos', this)">
@@ -3896,6 +3899,481 @@
 </div>
 
 </div><!-- /gs-tabelas-config -->
+
+<div class="guia-section" id="gs-tabelas-tce">
+  <p class="section-label">Tabelas do TCE · Layout v6.04 Tributário</p>
+
+<style>
+  .tce-tab-intro {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .tce-tab-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .tce-tab-jump {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .tce-tab-jump:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent-border);
+  }
+  .tce-table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1.2rem;
+    overflow: hidden;
+  }
+  .tce-table-card-header {
+    background: var(--surface2);
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .tce-table-card-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--surface);
+    background: var(--accent);
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .tce-table-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .tce-table-card-usage {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--text3);
+    font-family: var(--mono);
+    white-space: nowrap;
+  }
+  .tce-table-card-body {
+    padding: 0;
+  }
+  .tce-table-card-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .tce-table-card-body th {
+    text-align: left;
+    padding: 8px 18px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tce-table-card-body td {
+    padding: 7px 18px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  .tce-table-card-body tr:last-child td {
+    border-bottom: none;
+  }
+  .tce-table-card-body tr:hover {
+    background: var(--surface2);
+  }
+  .tce-val-code {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--accent);
+    min-width: 35px;
+    display: inline-block;
+  }
+  .tce-table-card-note {
+    padding: 10px 18px;
+    border-top: 1px solid var(--border);
+    background: var(--warn-bg);
+    font-size: 11px;
+    color: var(--warn);
+    line-height: 1.5;
+  }
+  .tce-table-source {
+    font-size: 10px;
+    color: var(--text3);
+    text-align: right;
+    padding: 6px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .tce-table-source a {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+</style>
+
+<div class="tce-tab-intro">
+  <strong>🏛️ Tabelas do TCE/SC</strong> referenciadas no layout <strong>v6.04 — Tributário</strong>. Cada tabela define os valores válidos para os campos do pacote tributário. Fonte oficial: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744341243/v6.04+-+Tabelas+B+sicas" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline">Confluence TCE/SC — Tabelas Básicas v6.04</a>.
+</div>
+
+<!-- ── Navegação rápida ── -->
+<div class="tce-tab-grid">
+  <a class="tce-tab-jump" href="#tce-t40" onclick="event.preventDefault();document.getElementById('tce-t40').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 40</a>
+  <a class="tce-tab-jump" href="#tce-t84" onclick="event.preventDefault();document.getElementById('tce-t84').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 84</a>
+  <a class="tce-tab-jump" href="#tce-t87" onclick="event.preventDefault();document.getElementById('tce-t87').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 87</a>
+  <a class="tce-tab-jump" href="#tce-t88" onclick="event.preventDefault();document.getElementById('tce-t88').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 88</a>
+  <a class="tce-tab-jump" href="#tce-t89" onclick="event.preventDefault();document.getElementById('tce-t89').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 89</a>
+  <a class="tce-tab-jump" href="#tce-t90" onclick="event.preventDefault();document.getElementById('tce-t90').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 90</a>
+  <a class="tce-tab-jump" href="#tce-t91" onclick="event.preventDefault();document.getElementById('tce-t91').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 91</a>
+  <a class="tce-tab-jump" href="#tce-t92" onclick="event.preventDefault();document.getElementById('tce-t92').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 92</a>
+  <a class="tce-tab-jump" href="#tce-t110" onclick="event.preventDefault();document.getElementById('tce-t110').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 110</a>
+  <a class="tce-tab-jump" href="#tce-t111" onclick="event.preventDefault();document.getElementById('tce-t111').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 111</a>
+  <a class="tce-tab-jump" href="#tce-t112" onclick="event.preventDefault();document.getElementById('tce-t112').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 112</a>
+  <a class="tce-tab-jump" href="#tce-t113" onclick="event.preventDefault();document.getElementById('tce-t113').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 113</a>
+  <a class="tce-tab-jump" href="#tce-t133" onclick="event.preventDefault();document.getElementById('tce-t133').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 133</a>
+  <a class="tce-tab-jump" href="#tce-t134" onclick="event.preventDefault();document.getElementById('tce-t134').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 134</a>
+  <a class="tce-tab-jump" href="#tce-t149" onclick="event.preventDefault();document.getElementById('tce-t149').scrollIntoView({behavior:'smooth',block:'start'});">Tab. 149</a>
+</div>
+
+<!-- ══ TABELA 40 ══ -->
+<div class="tce-table-card" id="tce-t40">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 40</span>
+    <span class="tce-table-card-title">Tipo de Pessoa</span>
+    <span class="tce-table-card-usage">Cadastro Contribuinte</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Pessoa Física</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>Pessoa Jurídica</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Identificação Internacional (Empresas)</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Pessoa Física (Estrangeiro)</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744341835" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 40</a></div>
+</div>
+
+<!-- ══ TABELA 84 ══ -->
+<div class="tce-table-card" id="tce-t84">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 84</span>
+    <span class="tce-table-card-title">Tipos de Operações dos Créditos Tributários e Não Tributários</span>
+    <span class="tce-table-card-usage">Lançamento (04)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Lançamento Inicial do Crédito Tributário (Não Inscrito em Dívida Ativa)</td></tr>
+      <tr><td><span class="tce-val-code" style="text-decoration:line-through;opacity:0.6;">02</span></td><td style="text-decoration:line-through;opacity:0.6;">Implantação de Saldos de Exercícios Anteriores (Não Inscritos em Dívida Ativa)</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Inscrição em Dívida Ativa</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Implantação de Saldos em virtude de migração de Sistema de TI</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>Transferência de Crédito Tributário entre Contribuintes</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342484" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 84</a></div>
+</div>
+
+<!-- ══ TABELA 87 ══ -->
+<div class="tce-table-card" id="tce-t87">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 87</span>
+    <span class="tce-table-card-title">Tipos de Créditos</span>
+    <span class="tce-table-card-usage">Lançamento (04) · codigoTce</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>IPTU</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>ITBI (Urbano)</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>ISS</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Contribuição de Melhoria</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>Taxas</td></tr>
+      <tr><td><span class="tce-val-code">06</span></td><td>COSIP</td></tr>
+      <tr><td><span class="tce-val-code">07</span></td><td>Multas Aplicadas pelo TCE/SC</td></tr>
+      <tr><td><span class="tce-val-code">08</span></td><td>Outros (Empréstimos Compulsórios, Foros, Laudêmios, Aluguéis, Honorários Advocatícios, etc.)</td></tr>
+      <tr><td><span class="tce-val-code">09</span></td><td>Tarifas</td></tr>
+      <tr><td><span class="tce-val-code">10</span></td><td>Outras Multas (exceto as aplicadas pelo TCE/SC)</td></tr>
+      <tr><td><span class="tce-val-code">11</span></td><td>ITBI (Rural)</td></tr>
+      <tr><td><span class="tce-val-code">12</span></td><td>ITBI Sobrepartilha ou ITBI Direitos Reais</td></tr>
+      <tr><td><span class="tce-val-code">13</span></td><td>IPTU Decorrentes de Leilão</td></tr>
+      <tr><td><span class="tce-val-code">14</span></td><td>ISS (Retido)</td></tr>
+      <tr><td><span class="tce-val-code">15</span></td><td>ISS Simples Nacional (Lei Complementar nº 123/2006)</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342529" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 87</a></div>
+</div>
+
+<!-- ══ TABELA 88 ══ -->
+<div class="tce-table-card" id="tce-t88">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 88</span>
+    <span class="tce-table-card-title">Tipos de Baixa dos Créditos Tributários e Não Tributários</span>
+    <span class="tce-table-card-usage">Baixas (10)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Isenção</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>Remissão</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Cancelamento</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Anistia</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>Prescrição</td></tr>
+      <tr><td><span class="tce-val-code">06</span></td><td>Descontos Concedidos</td></tr>
+      <tr><td><span class="tce-val-code">07</span></td><td>Compensação</td></tr>
+      <tr><td><span class="tce-val-code">08</span></td><td>Decisão Administrativa</td></tr>
+      <tr><td><span class="tce-val-code">09</span></td><td>Decisão Judicial</td></tr>
+      <tr><td><span class="tce-val-code">10</span></td><td>Inscrição em Dívida Ativa*</td></tr>
+      <tr><td><span class="tce-val-code">11</span></td><td>Outros</td></tr>
+      <tr><td><span class="tce-val-code">12</span></td><td>Zerar saldo em virtude de migração de Sistema de TI</td></tr>
+      <tr><td><span class="tce-val-code">13</span></td><td>Transferência de Crédito Tributário entre Contribuintes</td></tr>
+      <tr><td><span class="tce-val-code">14</span></td><td>Transação</td></tr>
+      <tr><td><span class="tce-val-code">15</span></td><td>Reintegração do Crédito Original**</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342544" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 88</a></div>
+</div>
+
+<!-- ══ TABELA 89 ══ -->
+<div class="tce-table-card" id="tce-t89">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 89</span>
+    <span class="tce-table-card-title">Tipos de Arrecadação</span>
+    <span class="tce-table-card-usage">DGA (11) · Estorno (12)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Pagamento do Principal</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>Dação em Pagamento do Principal</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Multa ou Juros</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Outros</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>Pagamento a Maior</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342589" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 89</a></div>
+</div>
+
+<!-- ══ TABELA 90 ══ -->
+<div class="tce-table-card" id="tce-t90">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 90</span>
+    <span class="tce-table-card-title">Tipo de Utilização do Imóvel – Cadastro Imobiliário</span>
+    <span class="tce-table-card-usage">Imobiliário (02)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Residencial</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>Comercial</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Industrial</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Prestação de Serviço</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>Outros</td></tr>
+      <tr><td><span class="tce-val-code">06</span></td><td>Imóvel Rural</td></tr>
+      <tr><td><span class="tce-val-code">07</span></td><td>Público</td></tr>
+      <tr><td><span class="tce-val-code">97</span></td><td>Extinção da Inscrição Imobiliária por mudança de número de Inscrição Imobiliária</td></tr>
+      <tr><td><span class="tce-val-code">98</span></td><td>Extinção da Inscrição Imobiliária por fusão/desmembramento</td></tr>
+      <tr><td><span class="tce-val-code">99</span></td><td>Extinção da Inscrição Imobiliária por outros motivos</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342559" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 90</a></div>
+</div>
+
+<!-- ══ TABELA 91 ══ -->
+<div class="tce-table-card" id="tce-t91">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 91</span>
+    <span class="tce-table-card-title">Tipo de Imóvel – Cadastro Imobiliário</span>
+    <span class="tce-table-card-usage">Imobiliário (02)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Terreno (não edificado)</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>Apartamento</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Casa</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Sala Comercial ou Loja</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>Galpão</td></tr>
+      <tr><td><span class="tce-val-code">06</span></td><td>Garagem</td></tr>
+      <tr><td><span class="tce-val-code">07</span></td><td>Outros</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342574" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 91</a></div>
+</div>
+
+<!-- ══ TABELA 92 ══ -->
+<div class="tce-table-card" id="tce-t92">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 92</span>
+    <span class="tce-table-card-title">Situação Fiscal (Tipo de Condição do Contribuinte – Cadastro Imobiliário)</span>
+    <span class="tce-table-card-usage">Propriedade (03)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Tributado</td></tr>
+      <tr><td><span class="tce-val-code" style="text-decoration:line-through;opacity:0.6;">02</span></td><td style="text-decoration:line-through;opacity:0.6;">Imune (Outras Imunidades)</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Isento</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Outros</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>Imunidade Recíproca (CF/1988, art. 150, VI, a)</td></tr>
+      <tr><td><span class="tce-val-code">06</span></td><td>Imunidade Religiosa (CF/1988, art. 150, VI, b)</td></tr>
+      <tr><td><span class="tce-val-code">07</span></td><td>Imunidade de Entidades (CF/1988, art. 150, VI, c)</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342604" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 92</a></div>
+</div>
+
+<!-- ══ TABELA 110 ══ -->
+<div class="tce-table-card" id="tce-t110">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 110</span>
+    <span class="tce-table-card-title">Tipo Revisão de Lançamento de Créditos Tributários e de Dívidas Ativas</span>
+    <span class="tce-table-card-usage">Revisões (09)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Revisão por Erro ou Estorno de Lançamento</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>Revisão por Multa</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Revisão por Juros</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Revisão por Atualização Monetária</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>Estorno de Revisão por Multa</td></tr>
+      <tr><td><span class="tce-val-code">06</span></td><td>Estorno de Revisão por Juros</td></tr>
+      <tr><td><span class="tce-val-code">07</span></td><td>Estorno de Revisão por Atualização Monetária</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342873" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 110</a></div>
+</div>
+
+<!-- ══ TABELA 111 ══ -->
+<div class="tce-table-card" id="tce-t111">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 111</span>
+    <span class="tce-table-card-title">Tipo Cobrança</span>
+    <span class="tce-table-card-usage">Cobrança DA (05)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">1</span></td><td>Protesto Extrajudicial</td></tr>
+      <tr><td><span class="tce-val-code">2</span></td><td>Execução Fiscal</td></tr>
+      <tr><td><span class="tce-val-code">3</span></td><td>Parcelamento</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342888" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 111</a></div>
+</div>
+
+<!-- ══ TABELA 112 ══ -->
+<div class="tce-table-card" id="tce-t112">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 112</span>
+    <span class="tce-table-card-title">Tipo de Parcelamento</span>
+    <span class="tce-table-card-usage">Cobrança DA (05)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">1</span></td><td>Ordinário (parcelamentos sem desconto de juros e multas)</td></tr>
+      <tr><td><span class="tce-val-code">2</span></td><td>Extraordinário (parcelamentos com descontos de juros e multas)</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342903" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 112</a></div>
+</div>
+
+<!-- ══ TABELA 113 ══ -->
+<div class="tce-table-card" id="tce-t113">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 113</span>
+    <span class="tce-table-card-title">Tipo Situação de Cobrança de Dívida Ativa</span>
+    <span class="tce-table-card-usage">Situação Cobrança DA (08)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Ativo</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>Suspenso</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Cancelado (apenas para Protesto e Parcelamento)</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>Quitado (para todos os tipos de cobrança. Na Execução Fiscal, considerar quitado quando há extinção pelo pagamento)</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>Retirado (apenas para Protesto Extrajudicial)</td></tr>
+      <tr><td><span class="tce-val-code">06</span></td><td>Extinta por outros motivos (apenas para Execução Fiscal)</td></tr>
+      <tr><td><span class="tce-val-code">07</span></td><td>Extinção parcial (apenas para Execução Fiscal)</td></tr>
+      <tr><td><span class="tce-val-code">08</span></td><td>Atualização de dados</td></tr>
+      <tr><td><span class="tce-val-code">09</span></td><td>Cancelado por erro de sistema</td></tr>
+      <tr><td><span class="tce-val-code">10</span></td><td>Transferência de dívida em virtude de migração de Sistema de TI ou Transferência de Crédito Tributário entre Contribuintes</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744342918" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 113</a></div>
+</div>
+
+<!-- ══ TABELA 133 ══ -->
+<div class="tce-table-card" id="tce-t133">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 133</span>
+    <span class="tce-table-card-title">Tipo de Representante</span>
+    <span class="tce-table-card-usage">Cadastro Contribuinte (Espólio)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Administrador Provisório (art. 1.797 Lei 10.406/2002)</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>Inventariante (art. 75 Lei 13.105/2015)</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>Falecido mas Sem Administrador Provisório ou Inventariante Identificado</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744343218" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 133</a></div>
+</div>
+
+<!-- ══ TABELA 134 ══ -->
+<div class="tce-table-card" id="tce-t134">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 134</span>
+    <span class="tce-table-card-title">Tipo de Frequência de Coleta</span>
+    <span class="tce-table-card-usage">Cadastro Imobiliário (02)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>1 vez por semana</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>2 vezes por semana</td></tr>
+      <tr><td><span class="tce-val-code">03</span></td><td>3 vezes por semana</td></tr>
+      <tr><td><span class="tce-val-code">04</span></td><td>4 vezes por semana</td></tr>
+      <tr><td><span class="tce-val-code">05</span></td><td>5 vezes por semana</td></tr>
+      <tr><td><span class="tce-val-code">06</span></td><td>6 vezes por semana</td></tr>
+      <tr><td><span class="tce-val-code">07</span></td><td>7 vezes por semana</td></tr>
+      <tr><td><span class="tce-val-code">08</span></td><td>1 vez a cada quinze dias</td></tr>
+      <tr><td><span class="tce-val-code">09</span></td><td>1 vez em mais de quinze dias</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1744343233" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 134</a></div>
+</div>
+
+<!-- ══ TABELA 149 ══ -->
+<div class="tce-table-card" id="tce-t149">
+  <div class="tce-table-card-header">
+    <span class="tce-table-card-num">TAB. 149</span>
+    <span class="tce-table-card-title">Tipo de Saldo Inicial</span>
+    <span class="tce-table-card-usage">Saldo Inicial (00)</span>
+  </div>
+  <div class="tce-table-card-body">
+    <table><thead><tr><th style="width:60px;">Código</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td><span class="tce-val-code">01</span></td><td>Saldo Inicial (Abertura de Exercício)</td></tr>
+      <tr><td><span class="tce-val-code">02</span></td><td>Saldo Inicial (Reintegração de Crédito)</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tce-table-source">Fonte: <a href="https://jira-tcesc.atlassian.net/wiki/spaces/SD/pages/1853620225" target="_blank" rel="noopener">Confluence TCE/SC — Tabela 149</a></div>
+</div>
+
+</div><!-- /gs-tabelas-tce -->
 
   </div>
   <!-- fim guias -->
@@ -10862,7 +11340,7 @@ percorrer (dadosEsfinge) { itemEsfinge -&gt;
 
   /* ── acessos TCE ── */
   var acData = [
-    {m:'PM DE ATALANTA/SC',         u:'97015377934',                s:'nNhj1L',            ug:''},
+    {m:'PM DE ATALANTA/SC',         u:'97015377934',                s:'UFs278',             ug:'11444'},
     {m:'PM DE SÃO JOSÉ DO CERRITO/SC', u:'53064356968',             s:'Tce20jc',            ug:'11045'},
     {m:'PM DE IMARUÍ/SC',           u:'2376642914',                 s:'Tr1butos',           ug:'12130'},
     {m:'PM ALFREDO WAGNER/SC',      u:'09095303942 / 12237352909',  s:'Est090 / pmawIza122',ug:''},
